@@ -1,0 +1,28 @@
+[
+  {
+    "createIndexes": "device",
+    "indexes": [
+      {
+        "name": "id",
+        "key": {
+          "id": 1
+        },
+        "unique": true
+      },
+      {
+        "name": "name",
+        "key": {
+          "name": 1
+        },
+        "unique": false
+      },
+      {
+        "name": "mac",
+        "key": {
+          "mac": 1
+        },
+        "unique": true
+      }
+    ]
+  }
+]
