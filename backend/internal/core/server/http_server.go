@@ -32,6 +32,7 @@ func Setup(ctx context.Context) error {
 	engine := gin.New()
 	engine.RedirectTrailingSlash = false
 	engine.Use(
+		controller.CORSMiddleware(),
 		controller.TraceMiddleware(),
 		controller.LoggingMiddleware(),
 		controller.RecoveryMiddleware(ctx),
