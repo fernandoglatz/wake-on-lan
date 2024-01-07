@@ -1,0 +1,6 @@
+[
+  {
+    "dropIndexes": "device",
+    "indexes": ["id", "name", "mac"]
+  }
+]
