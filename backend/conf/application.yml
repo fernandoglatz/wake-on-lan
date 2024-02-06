@@ -1,0 +1,13 @@
+server:
+  listening: "0.0.0.0:8080"
+  context-path: "/wake-on-lan"
+
+data:
+  mongo:
+    uri: "mongodb://mongo:27017"
+    database: "wake-on-lan"
+
+log:
+  level: INFO
+  format: TEXT
+  colored: true
