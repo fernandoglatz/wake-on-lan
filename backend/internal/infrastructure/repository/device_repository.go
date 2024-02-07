@@ -85,20 +85,23 @@ func (repository *DeviceRepository) Save(ctx context.Context, device *entity.Dev
 		device.ID = strings.Replace(uuidStr, "-", "", -1)
 	}
 
+	var err error
+
 	if device.CreatedAt.IsZero() {
 		device.CreatedAt = now
-
-		_, err := repository.collection.InsertOne(ctx, device)
-		if err != nil {
-			return &exceptions.WrappedError{
-				Error: err,
-			}
-		}
-
+		_, err = repository.collection.InsertOne(ctx, device)
 	} else {
 		filter := bson.M{"id": device.ID}
-		_, err := repository.collection.ReplaceOne(ctx, filter, device)
-		if err != nil {
+		_, err = repository.collection.ReplaceOne(ctx, filter, device)
+	}
+
+	if err != nil {
+		if mongo.IsDuplicateKeyError(err) {
+			return &exceptions.WrappedError{
+				BaseError: exceptions.DuplicatedRecord,
+			}
+
+		} else {
 			return &exceptions.WrappedError{
 				Error: err,
 			}

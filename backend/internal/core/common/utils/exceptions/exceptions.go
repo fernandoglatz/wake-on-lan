@@ -17,6 +17,14 @@ var (
 		Code:    "INVALID_JSON",
 		Message: "Invalid JSON.",
 	}
+	DuplicatedRecord = BaseError{
+		Code:    "DUPLICATED_RECORD",
+		Message: "Record duplicated.",
+	}
+	WakeOnLanError = BaseError{
+		Code:    "WAKE_ON_LAN_ERROR",
+		Message: "Erro on waking up device",
+	}
 )
 
 type WrappedError struct {

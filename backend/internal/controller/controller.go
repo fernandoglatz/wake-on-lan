@@ -51,6 +51,10 @@ func HandleError(ctx context.Context, ginCtx *gin.Context, err *exceptions.Wrapp
 		httpStatus = http.StatusNotFound
 	}
 
+	if err.BaseError == exceptions.DuplicatedRecord {
+		httpStatus = http.StatusConflict
+	}
+
 	ginCtx.JSON(httpStatus, response.Response{
 		Code:    code,
 		Message: message,

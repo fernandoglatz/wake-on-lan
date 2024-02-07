@@ -5,13 +5,12 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Messages } from "primereact/messages";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-dark-blue/theme.css";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 import React, { useEffect, useRef, useState } from "react";
-import apiService from "./ApiService";
+import deviceService from "./DeviceService";
 
 function App() {
   let emptyDevice = {
@@ -24,13 +23,11 @@ function App() {
   const [devices, setDevices] = useState(null);
   const [deviceDialog, setDeviceDialog] = useState(false);
   const [deleteDeviceDialog, setDeleteDeviceDialog] = useState(false);
-  const [deleteDevicesDialog, setDeleteDevicesDialog] = useState(false);
   const [device, setDevice] = useState(emptyDevice);
   const [selectedDevices, setSelectedDevices] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
-  const msgs = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
@@ -40,28 +37,26 @@ function App() {
   useEffect(() => {
     if (fetchDevices) {
       setFetchDevices(false);
-      apiService
-        .get("device")
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw Error("No data");
-          }
-        })
-        .then((data) => {
-          setDevices(data);
+
+      deviceService
+        .getAll()
+        .then((devices) => {
+          setDevices(devices);
         })
         .catch((error) => {
-          console.log(error);
-          msgs.current.show({
-            severity: "error",
-            summary: "Oops!",
-            detail: "Service unavailable: " + error.message,
-          });
+          showErrorMessage(error);
         });
     }
   }, [fetchDevices]);
+
+  const showErrorMessage = (error) => {
+    toast.current.show({
+      severity: "error",
+      summary: "Oops!",
+      detail: error.message,
+      sticky: true,
+    });
+  };
 
   const openNew = () => {
     setDevice(emptyDevice);
@@ -78,78 +73,39 @@ function App() {
     setDeleteDeviceDialog(false);
   };
 
-  const hideDeleteDevicesDialog = () => {
-    setDeleteDevicesDialog(false);
-  };
-
   const saveDevice = () => {
     setSubmitted(true);
 
-    //TODO Fernando suspeito
-    if (device.name.trim()) {
-      if (device.id) {
-        apiService
-          .post("device/" + device.id, device)
-          .then(() => {
-            toast.current.show({
-              severity: "success",
-              summary: "Success!",
-              detail: "Device updated",
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            msgs.current.show({
-              severity: "error",
-              summary: "Oops!",
-              detail: "Service unavailable",
-            });
-          });
-      } else {
-        apiService
-          .put("device", device)
-          .then(() => {
-            toast.current.show({
-              severity: "success",
-              summary: "Success!",
-              detail: "Device created",
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            msgs.current.show({
-              severity: "error",
-              summary: "Oops!",
-              detail: "Service unavailable",
-            });
-          });
-      }
-
-      setFetchDevices(true);
-      hideDialog();
-    }
-  };
-
-  const wakeOnDevice = (device) => {
-    apiService
-    .wakeOn("device/" + device.id+"/wake-on")
-    .then((response) => {
-      if (response.ok) {
+    deviceService
+      .save(device)
+      .then(() => {
         toast.current.show({
           severity: "success",
           summary: "Success!",
-          detail: "Device deleted",
+          detail: "Device saved",
         });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      msgs.current.show({
-        severity: "error",
-        summary: "Oops!",
-        detail: "Service unavailable",
+
+        setFetchDevices(true);
+        hideDialog();
+      })
+      .catch((error) => {
+        showErrorMessage(error);
       });
-    });
+  };
+
+  const wakeOnDevice = (device) => {
+    deviceService
+      .wakeOn(device)
+      .then(() => {
+        toast.current.show({
+          severity: "success",
+          summary: "Success!",
+          detail: "Device waked on",
+        });
+      })
+      .catch((error) => {
+        showErrorMessage(error);
+      });
   };
 
   const editDevice = (device) => {
@@ -163,24 +119,17 @@ function App() {
   };
 
   const deleteDevice = () => {
-    apiService
-      .delete("device/" + device.id)
-      .then((response) => {
-        if (response.ok) {
-          toast.current.show({
-            severity: "success",
-            summary: "Success!",
-            detail: "Device deleted",
-          });
-        }
+    deviceService
+      .remove(device)
+      .then(() => {
+        toast.current.show({
+          severity: "success",
+          summary: "Success!",
+          detail: "Device deleted",
+        });
       })
       .catch((error) => {
-        console.log(error);
-        msgs.current.show({
-          severity: "error",
-          summary: "Oops!",
-          detail: "Service unavailable",
-        });
+        showErrorMessage(error);
       });
 
     setFetchDevices(true);
@@ -189,23 +138,6 @@ function App() {
 
   const exportCSV = () => {
     dt.current.exportCSV();
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteDevicesDialog(true);
-  };
-
-  const deleteSelectedDevices = () => {
-    let _devices = devices.filter((val) => !selectedDevices.includes(val));
-    setDevices(_devices);
-    setDeleteDevicesDialog(false);
-    setSelectedDevices(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Devices Deleted",
-      life: 3000,
-    });
   };
 
   const onInputChange = (e, name) => {
@@ -258,14 +190,6 @@ function App() {
           tooltipOptions={{ position: "bottom" }}
         />
         <Button
-          icon="pi pi-trash"
-          className="p-button-danger mr-2 p-button-rounded"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedDevices || !selectedDevices.length}
-          tooltip="Delete"
-          tooltipOptions={{ position: "bottom" }}
-        />
-        <Button
           icon="pi pi-upload"
           className="p-button-help p-button-rounded"
           onClick={exportCSV}
@@ -304,27 +228,9 @@ function App() {
     </React.Fragment>
   );
 
-  const deleteDevicesDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={hideDeleteDevicesDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        className="p-button-text"
-        onClick={deleteSelectedDevices}
-      />
-    </React.Fragment>
-  );
-
   return (
     <div className="datatable-crud-demo surface-card p-4 border-round shadow-2">
       <Toast ref={toast} />
-      <Messages ref={msgs} />
 
       <div className="text-3xl text-800 font-bold mb-4">Devices</div>
 
@@ -414,25 +320,6 @@ function App() {
             <span>
               Are you sure you want to delete <b>{device.name}</b>?
             </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteDevicesDialog}
-        style={{ width: "450px" }}
-        header="Confirm"
-        modal
-        footer={deleteDevicesDialogFooter}
-        onHide={hideDeleteDevicesDialog}
-      >
-        <div className="flex align-items-center justify-content-center">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {device && (
-            <span>Are you sure you want to delete the selected devices?</span>
           )}
         </div>
       </Dialog>

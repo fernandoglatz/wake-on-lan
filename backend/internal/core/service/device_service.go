@@ -37,8 +37,21 @@ func (service *DeviceService) Remove(ctx context.Context, device entity.Device) 
 
 func (service *DeviceService) WakeOn(ctx context.Context, device entity.Device) *exceptions.WrappedError {
 	mac := device.Mac
-	if mp, err := wakeonlan.NewMagicPacket(mac); err == nil {
-		mp.Send()
+
+	mp, err := wakeonlan.NewMagicPacket(mac)
+	if err != nil {
+		return &exceptions.WrappedError{
+			BaseError: exceptions.WakeOnLanError,
+			Error:     err,
+		}
+	}
+
+	err = mp.Send()
+	if err != nil {
+		return &exceptions.WrappedError{
+			BaseError: exceptions.WakeOnLanError,
+			Error:     err,
+		}
 	}
 
 	return nil
