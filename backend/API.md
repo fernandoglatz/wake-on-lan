@@ -6,7 +6,7 @@
 
 Base URLs:
 
-* <a href="/wake-on-lan">/wake-on-lan</a>
+* <a href="/api">/api</a>
 
 License: <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</a>
 

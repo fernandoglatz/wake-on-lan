@@ -3,18 +3,17 @@ RUN apk --no-cache add tzdata
 COPY . /app
 WORKDIR /app
 RUN npm install
-RUN npm run build
+RUN npm run build:production
 
-FROM busybox:1.36
-RUN adduser -D static
-USER static
-WORKDIR /home/static
-
+FROM nginx:1-alpine
 COPY --from=node-alpine /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=node-alpine /app/build /home/static
+COPY --from=node-alpine /app/build /usr/share/nginx/html
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
 
-EXPOSE 3000
+EXPOSE 80
 
 ENV TZ=America/Sao_Paulo
+ENV BACKEND_API=http://backend:8080/api
+ENV DOLLAR="$"
 
-CMD ["busybox", "httpd", "-f", "-v", "-p", "3000"]
+CMD /bin/ash -c "envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

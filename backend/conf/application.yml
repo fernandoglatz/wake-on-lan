@@ -1,6 +1,6 @@
 server:
   listening: "0.0.0.0:8080"
-  context-path: "/wake-on-lan"
+  context-path: "/api"
 
 data:
   mongo:

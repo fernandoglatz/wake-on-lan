@@ -5,6 +5,7 @@ import (
 	"fernandoglatz/wake-on-lan/internal/core/common/utils/exceptions"
 	"fernandoglatz/wake-on-lan/internal/core/entity"
 	"fernandoglatz/wake-on-lan/internal/core/port/repository"
+	"strings"
 
 	"github.com/da-rod/wakeonlan"
 )
@@ -28,6 +29,8 @@ func (service *DeviceService) GetAll(ctx context.Context) ([]entity.Device, *exc
 }
 
 func (service *DeviceService) Save(ctx context.Context, device *entity.Device) *exceptions.WrappedError {
+	device.Mac = strings.ToUpper(device.Mac)
+
 	return service.repository.Save(ctx, device)
 }
 

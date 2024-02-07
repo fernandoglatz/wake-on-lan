@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
+import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-dark-blue/theme.css";
@@ -32,6 +33,11 @@ function App() {
 
   useEffect(() => {
     setFetchDevices(true);
+
+    console.log('process.env.PUBLIC_URL: ' + process.env.PUBLIC_URL); 
+    console.log('process.env.NODE_ENV: ' + process.env.NODE_ENV); 
+    console.log('process.env.REACT_APP_API_ENDPOINT: ' + process.env.REACT_APP_API_ENDPOINT); 
+    console.log('process.env.REACT_APP_ENVIRONMENT: ' + process.env.REACT_APP_ENVIRONMENT); 
   }, []);
 
   useEffect(() => {
@@ -76,21 +82,23 @@ function App() {
   const saveDevice = () => {
     setSubmitted(true);
 
-    deviceService
-      .save(device)
-      .then(() => {
-        toast.current.show({
-          severity: "success",
-          summary: "Success!",
-          detail: "Device saved",
-        });
+    if (device.name && device.mac) {
+      deviceService
+        .save(device)
+        .then(() => {
+          toast.current.show({
+            severity: "success",
+            summary: "Success!",
+            detail: "Device saved",
+          });
 
-        setFetchDevices(true);
-        hideDialog();
-      })
-      .catch((error) => {
-        showErrorMessage(error);
-      });
+          setFetchDevices(true);
+          hideDialog();
+        })
+        .catch((error) => {
+          showErrorMessage(error);
+        });
+    }
   };
 
   const wakeOnDevice = (device) => {
@@ -268,7 +276,7 @@ function App() {
         visible={deviceDialog}
         breakpoints={{ "960px": "75vw", "640px": "100vw" }}
         style={{ width: "40vw" }}
-        header="Device Details"
+        header="Device details"
         modal
         className="p-fluid"
         footer={deviceDialogFooter}
@@ -280,7 +288,6 @@ function App() {
             id="name"
             value={device.name}
             onChange={(e) => onInputChange(e, "name")}
-            required
             autoFocus
             className={classNames({ "p-invalid": submitted && !device.name })}
           />
@@ -290,12 +297,14 @@ function App() {
         </div>
         <div className="field">
           <label htmlFor="mac">MAC</label>
-          <InputText
+          <InputMask
             id="mac"
             value={device.mac}
             onChange={(e) => onInputChange(e, "mac")}
-            required
+            mask="**:**:**:**:**:**"
+            placeholder="  :  :  :  :  :  "
             className={classNames({ "p-invalid": submitted && !device.mac })}
+            style={{ "text-transform": "uppercase" }}
           />
           {submitted && !device.mac && (
             <small className="p-error">MAC is required.</small>

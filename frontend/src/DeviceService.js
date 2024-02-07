@@ -1,5 +1,4 @@
-const API_BASE_URL = "http://localhost:8080/wake-on-lan";
-const BASE_PATH = "device";
+const API_URL = process.env.REACT_APP_API_ENDPOINT + "/device";
 
 const headers = {
   "Content-Type": "application/json",
@@ -8,7 +7,7 @@ const headers = {
 const deviceService = {
   async getAll() {
     let method = "GET";
-    let url = API_BASE_URL + "/" + BASE_PATH;
+    let url = API_URL;
 
     return await fetch(url, {
       method: method,
@@ -27,7 +26,7 @@ const deviceService = {
 
   async save(device) {
     let method = "PUT";
-    let url = API_BASE_URL + "/" + BASE_PATH;
+    let url = API_URL;
 
     if (device.id) {
       method = "POST";
@@ -52,7 +51,7 @@ const deviceService = {
 
   async remove(device) {
     let method = "DELETE";
-    let url = API_BASE_URL + "/" + BASE_PATH + "/" + device.id;
+    let url = API_URL + "/" + device.id;
 
     return await fetch(url, {
       method: method,
@@ -67,7 +66,7 @@ const deviceService = {
 
   async wakeOn(device) {
     let method = "POST";
-    let url = API_BASE_URL + "/" + BASE_PATH + "/" + device.id + "/wake-on";
+    let url = API_URL + "/" + device.id + "/wake-on";
 
     return await fetch(url, {
       method: method,

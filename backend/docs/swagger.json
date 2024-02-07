@@ -9,7 +9,7 @@
         },
         "version": "1.0"
     },
-    "basePath": "/wake-on-lan",
+    "basePath": "/api",
     "paths": {
         "/device": {
             "get": {

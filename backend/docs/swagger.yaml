@@ -1,4 +1,4 @@
-basePath: /wake-on-lan
+basePath: /api
 definitions:
   entity.Device:
     properties:
