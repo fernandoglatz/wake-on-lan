@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=${TZ}
+      - BACKEND_API=${BACKEND_API}
     logging:
       driver: "json-file"
       options:
