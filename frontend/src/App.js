@@ -33,11 +33,6 @@ function App() {
 
   useEffect(() => {
     setFetchDevices(true);
-
-    console.log('process.env.PUBLIC_URL: ' + process.env.PUBLIC_URL); 
-    console.log('process.env.NODE_ENV: ' + process.env.NODE_ENV); 
-    console.log('process.env.REACT_APP_API_ENDPOINT: ' + process.env.REACT_APP_API_ENDPOINT); 
-    console.log('process.env.REACT_APP_ENVIRONMENT: ' + process.env.REACT_APP_ENVIRONMENT); 
   }, []);
 
   useEffect(() => {
