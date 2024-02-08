@@ -333,6 +333,17 @@
         }
     },
     "definitions": {
+        "device.Status": {
+            "type": "string",
+            "enum": [
+                "ONLINE",
+                "OFFLINE"
+            ],
+            "x-enum-varnames": [
+                "ONLINE",
+                "OFFLINE"
+            ]
+        },
         "entity.Device": {
             "type": "object",
             "properties": {
@@ -342,11 +353,17 @@
                 "id": {
                     "type": "string"
                 },
+                "ip": {
+                    "type": "string"
+                },
                 "mac": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/device.Status"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -356,6 +373,9 @@
         "request.DeviceRequest": {
             "type": "object",
             "properties": {
+                "ip": {
+                    "type": "string"
+                },
                 "mac": {
                     "type": "string"
                 },

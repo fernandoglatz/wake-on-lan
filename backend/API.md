@@ -34,8 +34,10 @@ License: <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</a
   {
     "createdAt": "string",
     "id": "string",
+    "ip": "string",
     "mac": "string",
     "name": "string",
+    "status": "ONLINE",
     "updatedAt": "string"
   }
 ]
@@ -58,9 +60,18 @@ Status Code **200**
 |*anonymous*|[[entity.Device](#schemaentity.device)]|false|none|none|
 |» createdAt|string|false|none|none|
 |» id|string|false|none|none|
+|» ip|string|false|none|none|
 |» mac|string|false|none|none|
 |» name|string|false|none|none|
+|» status|[device.Status](#schemadevice.status)|false|none|none|
 |» updatedAt|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ONLINE|
+|status|OFFLINE|
 
 <aside class="success">
 This operation does not require authentication
@@ -76,6 +87,7 @@ This operation does not require authentication
 
 ```json
 {
+  "ip": "string",
   "mac": "string",
   "name": "string"
 }
@@ -95,8 +107,10 @@ This operation does not require authentication
 {
   "createdAt": "string",
   "id": "string",
+  "ip": "string",
   "mac": "string",
   "name": "string",
+  "status": "ONLINE",
   "updatedAt": "string"
 }
 ```
@@ -133,8 +147,10 @@ This operation does not require authentication
 {
   "createdAt": "string",
   "id": "string",
+  "ip": "string",
   "mac": "string",
   "name": "string",
+  "status": "ONLINE",
   "updatedAt": "string"
 }
 ```
@@ -161,6 +177,7 @@ This operation does not require authentication
 
 ```json
 {
+  "ip": "string",
   "mac": "string",
   "name": "string"
 }
@@ -181,8 +198,10 @@ This operation does not require authentication
 {
   "createdAt": "string",
   "id": "string",
+  "ip": "string",
   "mac": "string",
   "name": "string",
+  "status": "ONLINE",
   "updatedAt": "string"
 }
 ```
@@ -209,6 +228,7 @@ This operation does not require authentication
 
 ```json
 {
+  "ip": "string",
   "mac": "string",
   "name": "string"
 }
@@ -229,8 +249,10 @@ This operation does not require authentication
 {
   "createdAt": "string",
   "id": "string",
+  "ip": "string",
   "mac": "string",
   "name": "string",
+  "status": "ONLINE",
   "updatedAt": "string"
 }
 ```
@@ -347,6 +369,31 @@ This operation does not require authentication
 
 # Schemas
 
+<h2 id="tocS_device.Status">device.Status</h2>
+<!-- backwards compatibility -->
+<a id="schemadevice.status"></a>
+<a id="schema_device.Status"></a>
+<a id="tocSdevice.status"></a>
+<a id="tocsdevice.status"></a>
+
+```json
+"ONLINE"
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|*anonymous*|ONLINE|
+|*anonymous*|OFFLINE|
+
 <h2 id="tocS_entity.Device">entity.Device</h2>
 <!-- backwards compatibility -->
 <a id="schemaentity.device"></a>
@@ -358,8 +405,10 @@ This operation does not require authentication
 {
   "createdAt": "string",
   "id": "string",
+  "ip": "string",
   "mac": "string",
   "name": "string",
+  "status": "ONLINE",
   "updatedAt": "string"
 }
 
@@ -371,8 +420,10 @@ This operation does not require authentication
 |---|---|---|---|---|
 |createdAt|string|false|none|none|
 |id|string|false|none|none|
+|ip|string|false|none|none|
 |mac|string|false|none|none|
 |name|string|false|none|none|
+|status|[device.Status](#schemadevice.status)|false|none|none|
 |updatedAt|string|false|none|none|
 
 <h2 id="tocS_request.DeviceRequest">request.DeviceRequest</h2>
@@ -384,6 +435,7 @@ This operation does not require authentication
 
 ```json
 {
+  "ip": "string",
   "mac": "string",
   "name": "string"
 }
@@ -394,6 +446,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|ip|string|false|none|none|
 |mac|string|false|none|none|
 |name|string|false|none|none|
 

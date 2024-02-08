@@ -8,6 +8,7 @@ import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-dark-blue/theme.css";
+import { Tag } from "primereact/tag";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ function App() {
     id: null,
     name: "",
     mac: "",
+    ip: ""
   };
 
   const [fetchDevices, setFetchDevices] = useState(false);
@@ -77,7 +79,7 @@ function App() {
   const saveDevice = () => {
     setSubmitted(true);
 
-    if (device.name && device.mac) {
+    if (device.name && device.mac && device.ip) {
       deviceService
         .save(device)
         .then(() => {
@@ -149,6 +151,10 @@ function App() {
     _device[`${name}`] = val;
 
     setDevice(_device);
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return <Tag severity={rowData.status === 'ONLINE' ? 'success': 'warning'} value={rowData.status} />;
   };
 
   const actionBodyTemplate = (rowData) => {
@@ -259,6 +265,8 @@ function App() {
         ></Column>
         <Column field="name" header="Name" sortable></Column>
         <Column field="mac" header="MAC" sortable></Column>
+        <Column field="ip" header="IP" sortable></Column>
+        <Column header="Status" body={statusBodyTemplate}></Column>
         <Column
           body={actionBodyTemplate}
           exportable={false}
@@ -303,6 +311,18 @@ function App() {
           />
           {submitted && !device.mac && (
             <small className="p-error">MAC is required.</small>
+          )}
+        </div>
+        <div className="field">
+          <label htmlFor="ip">IP</label>
+          <InputText
+            id="ip"
+            value={device.ip}
+            onChange={(e) => onInputChange(e, "ip")}
+            className={classNames({ "p-invalid": submitted && !device.ip })}
+          />
+          {submitted && !device.ip && (
+            <small className="p-error">IP is required.</small>
           )}
         </div>
       </Dialog>

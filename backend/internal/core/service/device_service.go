@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"fernandoglatz/wake-on-lan/internal/core/common/utils"
 	"fernandoglatz/wake-on-lan/internal/core/common/utils/exceptions"
 	"fernandoglatz/wake-on-lan/internal/core/entity"
+	devicestatus "fernandoglatz/wake-on-lan/internal/core/entity/device"
 	"fernandoglatz/wake-on-lan/internal/core/port/repository"
 	"strings"
 
@@ -30,6 +32,10 @@ func (service *DeviceService) GetAll(ctx context.Context) ([]entity.Device, *exc
 
 func (service *DeviceService) Save(ctx context.Context, device *entity.Device) *exceptions.WrappedError {
 	device.Mac = strings.ToUpper(device.Mac)
+
+	if utils.IsEmptyStr(string(device.Status)) {
+		device.Status = devicestatus.OFFLINE
+	}
 
 	return service.repository.Save(ctx, device)
 }

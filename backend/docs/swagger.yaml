@@ -1,20 +1,34 @@
 basePath: /api
 definitions:
+  device.Status:
+    enum:
+    - ONLINE
+    - OFFLINE
+    type: string
+    x-enum-varnames:
+    - ONLINE
+    - OFFLINE
   entity.Device:
     properties:
       createdAt:
         type: string
       id:
         type: string
+      ip:
+        type: string
       mac:
         type: string
       name:
         type: string
+      status:
+        $ref: '#/definitions/device.Status'
       updatedAt:
         type: string
     type: object
   request.DeviceRequest:
     properties:
+      ip:
+        type: string
       mac:
         type: string
       name:

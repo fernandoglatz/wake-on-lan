@@ -341,6 +341,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "device.Status": {
+            "type": "string",
+            "enum": [
+                "ONLINE",
+                "OFFLINE"
+            ],
+            "x-enum-varnames": [
+                "ONLINE",
+                "OFFLINE"
+            ]
+        },
         "entity.Device": {
             "type": "object",
             "properties": {
@@ -350,11 +361,17 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "ip": {
+                    "type": "string"
+                },
                 "mac": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/device.Status"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -364,6 +381,9 @@ const docTemplate = `{
         "request.DeviceRequest": {
             "type": "object",
             "properties": {
+                "ip": {
+                    "type": "string"
+                },
                 "mac": {
                     "type": "string"
                 },
