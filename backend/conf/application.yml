@@ -4,7 +4,7 @@ server:
 
 data:
   mongo:
-    uri: "mongodb://mongo:27017"
+    uri: "mongodb://wol-mongo:27017"
     database: "wake-on-lan"
 
 log:

@@ -2,28 +2,25 @@ version: "3"
 services:
   backend:
     build: ./backend
-    hostname: backend
+    hostname: wol-backend
     ports:
       - "8080:8080"
     restart: unless-stopped
     environment:
       - TZ=${TZ}
-    depends_on:
-      - mongo
     logging:
       driver: "json-file"
       options:
         max-size: "50m"
+
   frontend:
     build: ./frontend
-    hostname: frontend
+    hostname: wol-frontend
     ports:
       - "80:80"
     restart: unless-stopped
     environment:
       - TZ=${TZ}
-    depends_on:
-      - backend
     logging:
       driver: "json-file"
       options:
@@ -31,7 +28,7 @@ services:
 
   mongo:
     image: mongo:7
-    hostname: mongo
+    hostname: wol-mongo
     ports:
      - "27017:27017"
     restart: unless-stopped
