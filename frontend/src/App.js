@@ -1,4 +1,3 @@
-import axios from "axios";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import { Button } from "primereact/button";
@@ -54,25 +53,13 @@ function App() {
   }, [fetchDevices]);
 
   const showErrorMessage = async (error) => {
-    if (error.message === "Failed to fetch") {
-      const axiosInstance = axios.create();
-      axiosInstance.defaults.maxRedirects = 0; // Set to 0 to prevent automatic redirects
-      axiosInstance.interceptors.response.use(
-        (response) => response,
-        (error) => {
-          if (error.response && [307].includes(error.response.status)) {
-            //removes PWA cache
-            caches.keys().then(function (names) {
-              for (let name of names) caches.delete(name);
-            });
+    if (error.message === "Failed to fetch" && navigator.onLine) {
+      //clear caches for oauth2
+      caches.keys().then(function (names) {
+        for (let name of names) caches.delete(name);
+      });
 
-            window.location.reload();
-          }
-          return Promise.reject(error);
-        }
-      );
-
-      await axiosInstance.get(process.env.PUBLIC_URL);
+      window.location.reload();
     }
 
     toast.current.show({
