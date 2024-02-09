@@ -5,9 +5,11 @@ WORKDIR /go/src
 RUN go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o main .
 
 
-FROM golang:1.21-alpine
+FROM busybox
 WORKDIR /app
 
+COPY --from=go-alpine /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=go-alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=go-alpine /go/src/main /app
 COPY conf /app/conf
 COPY scripts /app/scripts
