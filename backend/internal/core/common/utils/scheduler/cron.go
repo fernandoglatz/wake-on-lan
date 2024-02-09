@@ -14,7 +14,7 @@ func StartCronWorker(ctx context.Context) error {
 	deviceRepository := repository.NewDeviceRepository()
 	deviceService := service.NewDeviceService(deviceRepository)
 
-	_, err := cronWorker.AddFunc("0 * * * * *", deviceService.UpdateDevicesStatus)
+	_, err := cronWorker.AddFunc("*/5 * * * * *", deviceService.UpdateDevicesStatus)
 	if err != nil {
 		return err
 	}
