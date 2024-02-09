@@ -12,4 +12,5 @@ type IDeviceService interface {
 	Save(ctx context.Context, device *entity.Device) *exceptions.WrappedError
 	Remove(ctx context.Context, device entity.Device) *exceptions.WrappedError
 	WakeOn(ctx context.Context, device entity.Device) *exceptions.WrappedError
+	UpdateDevicesStatus()
 }

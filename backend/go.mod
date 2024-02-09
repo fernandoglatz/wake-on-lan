@@ -7,6 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
+	github.com/kotakanbe/go-pingscanner v0.1.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/zerolog v1.31.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0

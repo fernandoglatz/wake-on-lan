@@ -3,13 +3,16 @@ package service
 import (
 	"context"
 	"fernandoglatz/wake-on-lan/internal/core/common/utils"
+	"fernandoglatz/wake-on-lan/internal/core/common/utils/constants"
 	"fernandoglatz/wake-on-lan/internal/core/common/utils/exceptions"
+	"fernandoglatz/wake-on-lan/internal/core/common/utils/log"
 	"fernandoglatz/wake-on-lan/internal/core/entity"
 	devicestatus "fernandoglatz/wake-on-lan/internal/core/entity/device"
 	"fernandoglatz/wake-on-lan/internal/core/port/repository"
 	"strings"
 
 	"github.com/da-rod/wakeonlan"
+	"github.com/kotakanbe/go-pingscanner"
 )
 
 type DeviceService struct {
@@ -64,4 +67,48 @@ func (service *DeviceService) WakeOn(ctx context.Context, device entity.Device) 
 	}
 
 	return nil
+}
+
+func (service *DeviceService) UpdateDevicesStatus() {
+	ctx := context.Background()
+	devices, err := service.GetAll(ctx)
+
+	if err != nil {
+		log.Error(ctx).Msg("Error on getting devices: " + err.GetMessage())
+		return
+	}
+
+	for _, device := range devices {
+		isOnline := service.isOnline(ctx, device)
+
+		if isOnline && devicestatus.OFFLINE == device.Status {
+			device.Status = devicestatus.ONLINE
+			service.Save(ctx, &device)
+
+		} else if !isOnline && devicestatus.ONLINE == device.Status {
+			device.Status = devicestatus.OFFLINE
+			service.Save(ctx, &device)
+		}
+	}
+}
+
+func (service *DeviceService) isOnline(ctx context.Context, device entity.Device) bool {
+	scanner := pingscanner.PingScanner{
+		CIDR: device.Ip + "/32",
+		PingOptions: []string{
+			"-c1",
+			"-t1",
+		},
+		NumOfConcurrency: 1,
+	}
+	if aliveIPs, err := scanner.Scan(); err != nil {
+		log.Error(ctx).Msg("Error on pinging device: " + err.Error())
+
+	} else {
+		if len(aliveIPs) > constants.ZERO {
+			return true
+		}
+	}
+
+	return false
 }

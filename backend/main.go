@@ -4,6 +4,7 @@ import (
 	"context"
 	"fernandoglatz/wake-on-lan/internal/core/common/utils"
 	"fernandoglatz/wake-on-lan/internal/core/common/utils/log"
+	"fernandoglatz/wake-on-lan/internal/core/common/utils/scheduler"
 	"fernandoglatz/wake-on-lan/internal/core/server"
 	"fernandoglatz/wake-on-lan/internal/infrastructure/config"
 
@@ -34,6 +35,11 @@ func main() {
 	}
 
 	err = utils.ConnectToMongoDB(ctx)
+	if err != nil {
+		log.Fatal(ctx).Msg(err.Error())
+	}
+
+	err = scheduler.StartCronWorker(ctx)
 	if err != nil {
 		log.Fatal(ctx).Msg(err.Error())
 	}
