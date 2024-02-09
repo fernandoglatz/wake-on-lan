@@ -82,6 +82,8 @@ func (service *DeviceService) UpdateDevicesStatus() {
 		isOnline := service.isOnline(ctx, device)
 
 		if isOnline && devicestatus.OFFLINE == device.Status {
+			log.Info(ctx).Msg("Device [" + device.Ip + "] changed to ONLINE")
+
 			device.Status = devicestatus.ONLINE
 			err = service.Save(ctx, &device)
 
@@ -90,6 +92,8 @@ func (service *DeviceService) UpdateDevicesStatus() {
 			}
 
 		} else if !isOnline && devicestatus.ONLINE == device.Status {
+			log.Info(ctx).Msg("Device [" + device.Ip + "] changed to OFFLINE")
+
 			device.Status = devicestatus.OFFLINE
 			err = service.Save(ctx, &device)
 
@@ -111,11 +115,15 @@ func (service *DeviceService) isOnline(ctx context.Context, device entity.Device
 		},
 		NumOfConcurrency: 1,
 	}
-	if aliveIPs, err := scanner.Scan(); err != nil {
+
+	aliveIPs, err := scanner.Scan()
+
+	if err != nil {
 		log.Error(ctx).Msg("Error on pinging device[" + device.Ip + "]: " + err.Error())
 
 	} else {
 		if len(aliveIPs) > constants.ZERO {
+			log.Info(ctx).Msg("Device [" + device.Ip + "] online")
 			return true
 		}
 	}
