@@ -83,16 +83,26 @@ func (service *DeviceService) UpdateDevicesStatus() {
 
 		if isOnline && devicestatus.OFFLINE == device.Status {
 			device.Status = devicestatus.ONLINE
-			service.Save(ctx, &device)
+			err = service.Save(ctx, &device)
+
+			if err != nil {
+				log.Error(ctx).Msg("Error on saving device: " + err.GetMessage())
+			}
 
 		} else if !isOnline && devicestatus.ONLINE == device.Status {
 			device.Status = devicestatus.OFFLINE
-			service.Save(ctx, &device)
+			err = service.Save(ctx, &device)
+
+			if err != nil {
+				log.Error(ctx).Msg("Error on saving device: " + err.GetMessage())
+			}
 		}
 	}
 }
 
 func (service *DeviceService) isOnline(ctx context.Context, device entity.Device) bool {
+	log.Info(ctx).Msg("Pinging device [" + device.Ip + "]")
+
 	scanner := pingscanner.PingScanner{
 		CIDR: device.Ip + "/32",
 		PingOptions: []string{
@@ -102,7 +112,7 @@ func (service *DeviceService) isOnline(ctx context.Context, device entity.Device
 		NumOfConcurrency: 1,
 	}
 	if aliveIPs, err := scanner.Scan(); err != nil {
-		log.Error(ctx).Msg("Error on pinging device: " + err.Error())
+		log.Error(ctx).Msg("Error on pinging device[" + device.Ip + "]: " + err.Error())
 
 	} else {
 		if len(aliveIPs) > constants.ZERO {
