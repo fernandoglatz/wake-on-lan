@@ -9,12 +9,12 @@ import (
 )
 
 func StartCronWorker(ctx context.Context) error {
-	cronWorker := cron.New()
+	cronWorker := cron.New(cron.WithSeconds())
 
 	deviceRepository := repository.NewDeviceRepository()
 	deviceService := service.NewDeviceService(deviceRepository)
 
-	_, err := cronWorker.AddFunc("* * * * *", deviceService.UpdateDevicesStatus)
+	_, err := cronWorker.AddFunc("0 * * * * *", deviceService.UpdateDevicesStatus)
 	if err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ RUN go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o main .
 FROM scratch
 WORKDIR /app
 
+COPY --from=go-alpine /bin/ping /bin/ping
 COPY --from=go-alpine /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=go-alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=go-alpine /go/src/main /app
